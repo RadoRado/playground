@@ -14,6 +14,7 @@ function initOnReady() {
 
   addEventListener("keydown", function (e) {
     e.preventDefault();
+
     Game.keyPressed(e.keyCode);
   }, false);
 }

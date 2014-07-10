@@ -15,7 +15,8 @@ window.Game =
       72: "left",
       37: "right",
       65: "right"
-    };
+    },
+    playing = false;
 
   function init(cnvs, fs) {
     canvas = cnvs;
@@ -26,13 +27,20 @@ window.Game =
 
   function start() {
     var that = this;
+    playing = true;
     gameLoopIntervalId = setInterval(function() {
       gameLoop.call(that);
     }, frameSpeed)
   }
 
   function stop() {
+    playing = false;
     clearInterval(gameLoopIntervalId);
+  }
+
+  function toggle() {
+    // it is beautiful on the inside
+    [this.start, this.stop][+!!playing].call(this);
   }
 
   function drawText(text) {
@@ -70,7 +78,12 @@ window.Game =
   }
 
   function keyPressed(keyCode) {
-    console.log(keyCode);
+    if(keyCode === 32) {
+      Game.toggle();
+      drawText("Game Paused!");
+      return;
+    }
+
     var newDirection = keyCodesToDirection[keyCode] || "left";
     snake.setDirection(newDirection);
   }
@@ -91,6 +104,7 @@ window.Game =
     init: init,
     start: start,
     stop: stop,
+    toggle: toggle,
     keyPressed: keyPressed
   };
 
