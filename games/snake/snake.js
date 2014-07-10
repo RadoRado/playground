@@ -3,7 +3,7 @@ window.Snake =
   var
     snakeSize = 0, // how many pixels for one section
     sections = [],  // head is the last element
-    direction = "left",
+    direction = "left", // default direction
     allowedDirections = {
       "left": ["up", "down"],
       "right": ["up", "down"],
@@ -44,6 +44,22 @@ window.Snake =
     return false;
   }
 
+  function isEatingOwnTail() {
+    var
+      headIndex = sections.length - 1,
+      head = sections[headIndex],
+      result = false;
+
+    sections.slice(0, headIndex).forEach(function(section) {
+      if(head.x === section.x && head.y === section.y) {
+        result = true;
+        return false;
+      }
+    });
+
+    return result;
+  }
+
   function move() {
     // we take the tail, make it with head coordinates
     // then update it and put it as the new head
@@ -76,6 +92,7 @@ window.Snake =
     getSize: getSize,
     getSections: getSections,
     move: move,
-    setDirection: setDirection
+    setDirection: setDirection,
+    isEatingOwnTail: isEatingOwnTail
   }
 } (window));

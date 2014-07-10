@@ -32,7 +32,6 @@ window.Game =
   }
 
   function stop() {
-    console.log(gameLoopIntervalId);
     clearInterval(gameLoopIntervalId);
   }
 
@@ -70,6 +69,11 @@ window.Game =
     clearCanvas();
     snake.move();
     drawSnake();
+
+    if(snake.isEatingOwnTail()) {
+      console.log("Game over");
+      this.stop();
+    }
   }
 
   return {
