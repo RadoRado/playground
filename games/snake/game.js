@@ -88,13 +88,16 @@ window.Game =
     snake.setDirection(newDirection);
   }
 
+  // this is called every frameSpeed milliseconds
   function gameLoop() {
     clearCanvas();
 
     snake.move();
     drawSnake();
 
-    if(snake.isEatingOwnTail()) {
+    if([snake.isEatingOwnTail()].reduce(function(a,  b) {
+      return a || b
+    }, false)) {
       drawText("Game Over");
       this.stop();
     }
