@@ -35,6 +35,16 @@ window.Game =
     clearInterval(gameLoopIntervalId);
   }
 
+  function drawText(text) {
+    var
+      x = canvas.width / 2 - text.length * 30 / 2,
+      y = canvas.height / 2;
+
+    context.fillStyle = "#000";
+    context.font = "30px Arial";
+    context.fillText(text, x, y);
+  }
+
   function drawBox(x, y, size, color) {
     x *= size;
     y *= size;
@@ -67,11 +77,12 @@ window.Game =
 
   function gameLoop() {
     clearCanvas();
+
     snake.move();
     drawSnake();
 
     if(snake.isEatingOwnTail()) {
-      console.log("Game over");
+      drawText("Game Over");
       this.stop();
     }
   }
