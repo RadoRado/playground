@@ -5,13 +5,23 @@ window.Game =
     context = null,
     frameSpeed = null,
     gameLoopIntervalId = null,
-    snake = window.Snake;
+    snake = window.Snake,
+    keyCodesToDirection = {
+      38: "up",
+      87: "up",
+      40: "down",
+      83: "down",
+      37: "left",
+      72: "left",
+      37: "right",
+      65: "right"
+    };
 
   function init(cnvs, fs) {
     canvas = cnvs;
     context = canvas.getContext("2d");
     frameSpeed = fs;
-    Snake.init(10, 5);
+    Snake.init(10, 20);
   }
 
   function start() {
@@ -46,17 +56,19 @@ window.Game =
     });
   }
 
-  function moveSnake() {
-    Snake.move();
-  }
-
   function clearCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
+  function keyPressed(keyCode) {
+    console.log(keyCode);
+    var newDirection = keyCodesToDirection[keyCode] || "left";
+    snake.setDirection(newDirection);
+  }
+
   function gameLoop() {
     clearCanvas();
-    moveSnake();
+    snake.move();
     drawSnake();
   }
 
@@ -64,6 +76,7 @@ window.Game =
     init: init,
     start: start,
     stop: stop,
+    keyPressed: keyPressed
   };
 
 } (window) )
