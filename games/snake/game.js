@@ -6,6 +6,7 @@ window.Game =
     frameSpeed = null,
     gameLoopIntervalId = null,
     snake = window.Snake,
+    food = window.Food,
     keyCodesToDirection = {
       38: "up",
       87: "up",
@@ -22,7 +23,9 @@ window.Game =
     canvas = cnvs;
     context = canvas.getContext("2d");
     frameSpeed = fs;
-    Snake.init(10, 20);
+    snake.init(10, 5);
+    food.init(10, canvas.width, canvas.height);
+    createNewFood();
   }
 
   function start() {
@@ -73,6 +76,15 @@ window.Game =
     });
   }
 
+  function createNewFood() {
+    food.create();
+  }
+
+  function drawFood() {
+    var foodPoint = food.getPoint();
+    drawBox(foodPoint.x, foodPoint.y, food.getSize(), "blue");
+  }
+
   function clearCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
@@ -91,9 +103,13 @@ window.Game =
   // this is called every frameSpeed milliseconds
   function gameLoop() {
     clearCanvas();
-
-    snake.move();
     drawSnake();
+    drawFood();
+    snake.move();
+
+    if(snake.isEatingFood(food.getPoint())) {
+      createNewFood();
+    }
 
     if([snake.isEatingOwnTail()].reduce(function(a,  b) {
       return a || b

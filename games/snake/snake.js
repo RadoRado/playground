@@ -60,6 +60,14 @@ window.Snake =
     return result;
   }
 
+  function isEatingFood(foodPoint) {
+    var
+      headIndex = sections.length - 1,
+      head = sections[headIndex];
+
+    return head.x === foodPoint.x && head.y === foodPoint.y;
+  }
+
   function move() {
     // we take the tail, make it with head coordinates
     // then update it and put it as the new head
@@ -93,6 +101,7 @@ window.Snake =
     getSections: getSections,
     move: move,
     setDirection: setDirection,
-    isEatingOwnTail: isEatingOwnTail
+    isEatingOwnTail: isEatingOwnTail,
+    isEatingFood: isEatingFood
   }
 } (window));
