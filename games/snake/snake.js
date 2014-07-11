@@ -65,7 +65,13 @@ window.Snake =
       headIndex = sections.length - 1,
       head = sections[headIndex];
 
-    return head.x === foodPoint.x && head.y === foodPoint.y;
+    if(head.x === foodPoint.x && head.y === foodPoint.y) {
+      sections.push(foodPoint);
+      move();
+      return true;
+    }
+
+    return false;
   }
 
   function move() {
@@ -78,16 +84,16 @@ window.Snake =
 
     switch(direction) {
       case "left":
-        tail.x += 1;
+        tail.x += 1 ;
         break;
       case "right":
-        tail.x -= 1;
+        tail.x -= 1 ;
         break;
       case "down":
-        tail.y += 1;
+        tail.y += 1 ;
         break;
       case "up":
-        tail.y -= 1;
+        tail.y -= 1 ;
         break;
     }
 
