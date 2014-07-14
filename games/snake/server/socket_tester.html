@@ -25,6 +25,11 @@
             console.log(data);
         });
 
+        socket.on("start", function(data) {
+            console.log("game has started");
+            console.log(data);
+        });
+
         function runAfterSocketHasConnected() {
             $("#createGame").on("click", function() {
                 $.ajax({
@@ -49,7 +54,7 @@
                     data: JSON.stringify({
                         playerName: $("#playerName").val(),
                         socketId: socketId,
-                        gameId: gameId
+                        gameId: $("#joinGameId").val()
                     })
                 }).done(function(result) {
                     console.log(result);

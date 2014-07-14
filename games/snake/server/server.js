@@ -6,8 +6,14 @@ var
   bodyParser = require("body-parser");
 
 var gameData = {}; // socketId (host) -> {gameId, player2 (socketId)}
-var reverseGameData = {}; // gameId -> host
+var gameIdToHost = {}; // gameId -> host
 var connectedClients = {}; // socketId -> socket
+
+function emitTo(sockets, message, data) {
+  sockets.forEach(function(socket) {
+    socket.emit(message, data);
+  });
+}
 
 function socketConnected(socket) {
   console.log("Socket with id: " + socket.id + " connected");
@@ -21,15 +27,12 @@ function socketDisconected(socketId) {
     delete connectedClients[socketId];
   }
 
-  Object.keys(gameData).forEach(function(gameId) {
-    var players = gameData[gameId];
-
-    if(players.player1 === socketId) {
-      // notify player 2
-    } else if(players.player2 === socketId) {
-      // notify player 1
-    }
-  });
+  if(gameData[socketId]) {
+    var gameId = gameData[socketId].gameId;
+    // notify other player
+    delete gameData[socketId];
+    delete gameIdToHost[gameId];
+  }
 }
 
 // "{playerName}-{5 letters from socketId} - {random number between 1 and 1000}"
@@ -73,8 +76,10 @@ app.post("/createGame", function(req, res) {
       // host new game
       gameId = createGameId(playerName, socketId);
       gameData[socketId] = {
+        playerName: playerName,
         gameId: gameId
       }
+      gameIdToHost[gameId] = socketId;
     }
 
     res.json({
@@ -86,8 +91,28 @@ app.post("/joinGame", function(req, res) {
   var
     playerName = req.body.playerName,
     socketId = req.body.socketId,
-    gameId = req.body.gameId;
+    gameId = req.body.gameId,
+    host = null;
 
+    console.log(gameIdToHost);
+
+    if(gameIdToHost[gameId]) {
+      // this game is hosted
+      host = gameIdToHost[gameId];
+      gameData[host].player2 = socketId;
+
+      emitTo([connectedClients[host], connectedClients[socketId]], "start", {
+        player1: gameData[host].playerName,
+        player2: playerName
+      });
+      res.json({
+        status: "SUCCESS"
+      });
+    } else {
+      res.json({
+        "error": "This game is not hosted"
+      });
+    }
 
 });
 
