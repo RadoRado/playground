@@ -66,7 +66,7 @@ window.Snake =
       head = sections[headIndex];
 
     if(head.x === foodPoint.x && head.y === foodPoint.y) {
-      sections.push(foodPoint);
+      sections.unshift(foodPoint);
       move();
       return true;
     }
