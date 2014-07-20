@@ -1,11 +1,12 @@
 window.Game =
 (function(window, undefined) {
   var
+    TILE_SIZE = 10,
     canvas = null,
     context = null,
     frameSpeed = null,
     gameLoopIntervalId = null,
-    snake = null,
+    snakes = [],
     food = window.Food,
     keyCodesToDirection = {
       38: "up",
@@ -19,13 +20,29 @@ window.Game =
     },
     playing = false,
     PLAYER_1 = "player1",
-    PLAYER_2 = "player2";
+    PLAYER_2 = "player2",
+    currentPlayer = PLAYER_1;
+
+  function getSnakeForPlayer() {
+    if(currentPlayer === PLAYER_1) {
+      return snakes[0];
+    }
+
+    return snakes[1];
+  }
 
   function init(cnvs, fs, player) {
     canvas = cnvs;
     context = canvas.getContext("2d");
     frameSpeed = fs;
-    snake = new Snake(10, 5);
+    currentPlayer = player;
+
+    // player1 snake
+    snakes.push(new Snake(TILE_SIZE, 5, "red", 0));
+
+    // player2 snake
+    snakes.push(new Snake(TILE_SIZE, 5, "blue", 100 / TILE_SIZE));
+
     food.init(10, canvas.width, canvas.height);
     createNewFood();
   }
@@ -63,6 +80,8 @@ window.Game =
     y *= size;
 
     context.fillStyle = color;
+    // context.rect(x, y, size, size);
+
     context.beginPath();
     context.moveTo(x - (size / 2), y - (size / 2));
     context.lineTo(x + (size / 2), y - (size / 2));
@@ -72,9 +91,9 @@ window.Game =
     context.fill();
   }
 
-  function drawSnake() {
+  function drawSnake(snake) {
     snake.getSections().forEach(function(section) {
-      drawBox(section.x, section.y, snake.getSize(), "red");
+      drawBox(section.x, section.y, snake.getSize(), snake.getColor());
     });
   }
 
@@ -99,33 +118,31 @@ window.Game =
     }
 
     var newDirection = keyCodesToDirection[keyCode] || "left";
-    snake.setDirection(newDirection);
+
+    getSnakeForPlayer().setDirection(newDirection);
   }
 
   // this is called every frameSpeed milliseconds
   function gameLoop() {
     clearCanvas();
 
-    snake.move();
-    // emit to server via WebSockets
-
-    // goes to render
-    drawSnake();
     drawFood();
 
+    snakes.forEach(function(snake) {
+      snake.move();
+      drawSnake(snake);
 
-    // on render -> new position server -> drawSnake
+      if(snake.isEatingFood(food.getPoint())) {
+        createNewFood();
+      }
 
-    if(snake.isEatingFood(food.getPoint())) {
-      createNewFood();
-    }
-
-    if([snake.isEatingOwnTail()].reduce(function(a,  b) {
-      return a || b
-    }, false)) {
-      drawText("Game Over");
-      this.stop();
-    }
+      if([snake.isEatingOwnTail()].reduce(function(a,  b) {
+        return a || b
+      }, false)) {
+        drawText("Game Over");
+        this.stop();
+      }
+    });
   }
 
   return {

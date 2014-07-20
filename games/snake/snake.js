@@ -9,7 +9,7 @@ window.Snake =
       "down": ["left", "right"]
     };
 
-  function Snake(size, sectionsForStart, yForStart) {
+  function Snake(size, sectionsForStart, color, yForStart) {
     var
       sections = [],
       direction = "left";
@@ -20,6 +20,10 @@ window.Snake =
 
     this.getSections = function() {
       return sections.slice();
+    };
+
+    this.getColor = function() {
+      return color;
     };
 
     this.setDirection = function(newDirection) {

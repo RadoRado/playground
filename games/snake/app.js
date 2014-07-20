@@ -5,8 +5,9 @@ $(document).ready(function() {
       gameId = null,
       serverUrl = null;
 
+    startGame();
   // hide canvas until socket connection
-  $("#playCanvas").hide();
+  // $("#playCanvas").hide();
   $("#waitingForPlayer").hide();
 
   $("#connectToSocketServer").on("click", function() {
@@ -73,7 +74,7 @@ $(document).ready(function() {
     // make canvas fullscreen
     canvas = fitCanvasTo(canvas, canvasWigth, canvasHeight);
 
-    Game.init(canvas, 60);
+    Game.init(canvas, 60, "player2");
     Game.start();
 
     addEventListener("keydown", function (e) {
