@@ -1,29 +1,93 @@
-// plain JS without jQuery
+$(document).ready(function() {
+    var
+      socket = null,
+      socketId = null,
+      gameId = null,
+      serverUrl = null;
 
-function initOnReady() {
-  var
-    canvas = document.querySelector("#playCanvas"),
-    canvasWigth = document.body.clientWidth / 1.5,
-    canvasHeight = document.body.clientHeight / 1.5;
+  // hide canvas until socket connection
+  $("#playCanvas").hide();
+  $("#waitingForPlayer").hide();
 
-  // make canvas fullscreen
-  canvas = fitCanvasTo(canvas, canvasWigth, canvasHeight);
+  $("#connectToSocketServer").on("click", function() {
+    serverUrl = $("#socketServerUrl").val();
+    socket = new io(serverUrl);
 
-  Game.init(canvas, 60);
-  Game.start();
+    socket.on("connect", function() {
+      console.log("socket ready");
+      socketId = socket.io.engine.id;
+    });
 
-  addEventListener("keydown", function (e) {
-    e.preventDefault();
+    socket.on("start", function(data) {
+      $("#menuControls").hide();
+      $("#waitingForPlayer").hide();
+      $("#playCanvas").show();
+      startGame();
+    });
 
-    Game.keyPressed(e.keyCode);
-  }, false);
-}
+    socket.on("game_disconnected", function() {
+      alert("Game disconnected!");
+    });
+  });
 
-function fitCanvasTo(canvas, width, height) {
-  canvas.width = width;
-  canvas.height = height;
+  $("#createGameButton").on("click", function() {
+      $.ajax({
+          url: serverUrl + "/createGame",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+              playerName: $("#playerName").val(),
+              socketId: socketId
+          })
+      }).done(function(result) {
+          gameId = result.gameId;
+          $("#menuControls").hide();
+          $("#waitingForPlayer").show();
+          $("#gameId").html(gameId);
+          console.log("Game is created with id: ", gameId);
+      });
+  });
 
-  return canvas;
-}
+  $("#joinGameButton").on("click", function() {
+      gameId = $("#joinGameId").val();
+      $.ajax({
+          url: serverUrl + "/joinGame",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+              playerName: $("#playerName").val(),
+              socketId: socketId,
+              gameId: gameId
+          })
+      }).done(function(result) {
+          console.log(result);
+      });
+  });
 
-document.addEventListener("DOMContentLoaded", initOnReady, false)
+  function startGame() {
+    var
+      canvas = document.querySelector("#playCanvas"),
+      canvasWigth = document.body.clientWidth / 1.5,
+      canvasHeight = document.body.clientHeight / 1.5;
+
+    // make canvas fullscreen
+    canvas = fitCanvasTo(canvas, canvasWigth, canvasHeight);
+
+    Game.init(canvas, 60);
+    Game.start();
+
+    addEventListener("keydown", function (e) {
+      e.preventDefault();
+
+      Game.keyPressed(e.keyCode);
+    }, false);
+  }
+
+  function fitCanvasTo(canvas, width, height) {
+    canvas.width = width;
+    canvas.height = height;
+
+    return canvas;
+  }
+
+});

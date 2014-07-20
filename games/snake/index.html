@@ -1,3 +1,25 @@
+<div id="menuControls">
+    <p>Socket Server Destination:</p>
+    <input type="text" id="socketServerUrl" value="http://localhost:3000">
+    <button id="connectToSocketServer">Connect</button>
+    <p>Your username:</p>
+    <input type="text" id="playerName">
+
+    <hr>
+
+    <p>Join game:</p>
+    <input type="text" id="joinGameId">
+    <button id="joinGameButton">Join Game!</button>
+
+    <hr>
+
+    <button id="createGameButton">Create Game   </button>
+</div>
+
+<div id="waitingForPlayer">
+    <h2>Your game id is: <span id="gameId"></span></h2>
+</div>
+
 <style>
     /*mark the playground*/
     #playCanvas {
@@ -6,6 +28,8 @@
 </style>
 <canvas id="playCanvas"></canvas>
 
+<script src="bower_components/jQuery/dist/jquery.js"></script>
+<script src="bower_components/socket.io-client/socket.io.js"></script>
 <script src="food.js"></script>
 <script src="snake.js"></script>
 <script src="game.js"></script>
