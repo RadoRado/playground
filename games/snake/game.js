@@ -5,7 +5,7 @@ window.Game =
     context = null,
     frameSpeed = null,
     gameLoopIntervalId = null,
-    snake = window.Snake,
+    snake = null,
     food = window.Food,
     keyCodesToDirection = {
       38: "up",
@@ -17,13 +17,15 @@ window.Game =
       37: "right",
       65: "right"
     },
-    playing = false;
+    playing = false,
+    PLAYER_1 = "player1",
+    PLAYER_2 = "player2";
 
-  function init(cnvs, fs) {
+  function init(cnvs, fs, player) {
     canvas = cnvs;
     context = canvas.getContext("2d");
     frameSpeed = fs;
-    snake.init(10, 5);
+    snake = new Snake(10, 5);
     food.init(10, canvas.width, canvas.height);
     createNewFood();
   }
@@ -33,7 +35,7 @@ window.Game =
     playing = true;
     gameLoopIntervalId = setInterval(function() {
       gameLoop.call(that);
-    }, frameSpeed)
+    }, frameSpeed);
   }
 
   function stop() {
@@ -103,9 +105,16 @@ window.Game =
   // this is called every frameSpeed milliseconds
   function gameLoop() {
     clearCanvas();
+
+    snake.move();
+    // emit to server via WebSockets
+
+    // goes to render
     drawSnake();
     drawFood();
-    snake.move();
+
+
+    // on render -> new position server -> drawSnake
 
     if(snake.isEatingFood(food.getPoint())) {
       createNewFood();
