@@ -3,32 +3,35 @@ $(document).ready(function() {
       socket = null,
       socketId = null,
       gameId = null,
-      serverUrl = null;
+      serverUrl = null,
+      isHost = false;
 
-    startGame();
   // hide canvas until socket connection
-  // $("#playCanvas").hide();
+  $("#playCanvas").hide();
   $("#waitingForPlayer").hide();
 
   $("#connectToSocketServer").on("click", function() {
     serverUrl = $("#socketServerUrl").val();
-    socket = new io(serverUrl);
 
-    socket.on("connect", function() {
-      console.log("socket ready");
-      socketId = socket.io.engine.id;
-    });
+    if(!socket) {
+      socket = new io(serverUrl);
 
-    socket.on("start", function(data) {
-      $("#menuControls").hide();
-      $("#waitingForPlayer").hide();
-      $("#playCanvas").show();
-      startGame();
-    });
+      socket.on("connect", function() {
+        console.log("socket ready");
+        socketId = socket.io.engine.id;
+      });
 
-    socket.on("game_disconnected", function() {
-      alert("Game disconnected!");
-    });
+      socket.on("start", function(data) {
+        $("#menuControls").hide();
+        $("#waitingForPlayer").hide();
+        $("#playCanvas").show();
+        startGame(isHost, socket);
+      });
+
+      socket.on("game_disconnected", function() {
+        alert("Game disconnected!");
+      });
+    }
   });
 
   $("#createGameButton").on("click", function() {
@@ -41,6 +44,7 @@ $(document).ready(function() {
               socketId: socketId
           })
       }).done(function(result) {
+          isHost = true;
           gameId = result.gameId;
           $("#menuControls").hide();
           $("#waitingForPlayer").show();
@@ -65,7 +69,7 @@ $(document).ready(function() {
       });
   });
 
-  function startGame() {
+  function startGame(isHost, socket) {
     var
       canvas = document.querySelector("#playCanvas"),
       canvasWigth = document.body.clientWidth / 1.5,
@@ -74,8 +78,17 @@ $(document).ready(function() {
     // make canvas fullscreen
     canvas = fitCanvasTo(canvas, canvasWigth, canvasHeight);
 
-    Game.init(canvas, 60, "player2");
+    Game.init({
+      canvas: canvas,
+      frameSpeed: 60,
+      player: isHost? "player1" : "player2",
+      isHost: isHost,
+      gameId : gameId,
+      socket: socket
+    });
+
     Game.start();
+    console.log("Just started the game");
 
     addEventListener("keydown", function (e) {
       e.preventDefault();

@@ -1,5 +1,8 @@
+/*globals window, console*/
+
 window.Game =
-(function(window, undefined) {
+(function(Snake, undefined) {
+  "use strict";
   var
     TILE_SIZE = 10,
     canvas = null,
@@ -15,27 +18,34 @@ window.Game =
       83: "down",
       37: "left",
       72: "left",
-      37: "right",
       65: "right"
     },
     playing = false,
     PLAYER_1 = "player1",
     PLAYER_2 = "player2",
-    currentPlayer = PLAYER_1;
+    currentPlayer = PLAYER_1,
+    gameId = null,
+    socket = null,
+    isHost = null;
 
-  function getSnakeForPlayer() {
-    if(currentPlayer === PLAYER_1) {
+  function getSnakeForPlayer(player) {
+    if(player === PLAYER_1) {
       return snakes[0];
+    } else if(player === PLAYER_2) {
+      return snakes[1];
     }
-
-    return snakes[1];
   }
 
-  function init(cnvs, fs, player) {
-    canvas = cnvs;
+  function init(config) {
+    canvas = config.canvas;
     context = canvas.getContext("2d");
-    frameSpeed = fs;
-    currentPlayer = player;
+    frameSpeed = config.frameSpeed;
+    currentPlayer = config.player;
+    socket = config.socket;
+    gameId = config.gameId;
+    isHost = config.isHost;
+
+    socket.on("render", render);
 
     // player1 snake
     snakes.push(new Snake(TILE_SIZE, 5, "red", 0));
@@ -48,6 +58,9 @@ window.Game =
   }
 
   function start() {
+    if(!isHost) {
+      return;
+    }
     var that = this;
     playing = true;
     gameLoopIntervalId = setInterval(function() {
@@ -91,9 +104,9 @@ window.Game =
     context.fill();
   }
 
-  function drawSnake(snake) {
-    snake.getSections().forEach(function(section) {
-      drawBox(section.x, section.y, snake.getSize(), snake.getColor());
+  function drawSnake(snakeSections, snakeSize, snakeColor) {
+    snakeSections.forEach(function(section) {
+      drawBox(section.x, section.y, snakeSize, snakeColor);
     });
   }
 
@@ -101,8 +114,7 @@ window.Game =
     food.create();
   }
 
-  function drawFood() {
-    var foodPoint = food.getPoint();
+  function drawFood(foodPoint) {
     drawBox(foodPoint.x, foodPoint.y, food.getSize(), "blue");
   }
 
@@ -112,37 +124,76 @@ window.Game =
 
   function keyPressed(keyCode) {
     if(keyCode === 32) {
-      Game.toggle();
+      this.toggle();
       drawText("Game Paused!");
       return;
     }
 
     var newDirection = keyCodesToDirection[keyCode] || "left";
 
-    getSnakeForPlayer().setDirection(newDirection);
+    if(isHost) {
+      getSnakeForPlayer(currentPlayer).setDirection(newDirection);
+    } else {
+      socket.emit("move", {
+        gameId: gameId,
+        type: "newDirection",
+        direction: newDirection,
+        from: currentPlayer
+      });
+    }
   }
 
   // this is called every frameSpeed milliseconds
   function gameLoop() {
     clearCanvas();
-
-    drawFood();
+    drawFood(food.getPoint());
 
     snakes.forEach(function(snake) {
       snake.move();
-      drawSnake(snake);
+      drawSnake(snake.getSections(), snake.getSize(), snake.getColor());
 
       if(snake.isEatingFood(food.getPoint())) {
         createNewFood();
       }
 
       if([snake.isEatingOwnTail()].reduce(function(a,  b) {
-        return a || b
+        return a || b;
       }, false)) {
         drawText("Game Over");
         this.stop();
       }
     });
+
+    socket.emit("move", {
+      gameId: gameId,
+      type: "move",
+      from: currentPlayer,
+      player1: getSnakeForPlayer("player1").getSections(),
+      player2: getSnakeForPlayer("player2").getSections(),
+      food: food.getPoint()
+    });
+  }
+
+  function render(data) {
+    // we do not want data from ourselves
+    if(data.from === currentPlayer) {
+      return;
+    }
+    var
+      p1Snake = getSnakeForPlayer("player1"),
+      p2Snake = getSnakeForPlayer("player2");
+
+    clearCanvas();
+
+    switch(data.type) {
+      case "move":
+        drawFood(data.food)
+        drawSnake(data.player1, p1Snake.getSize(), p1Snake.getColor());
+        drawSnake(data.player2, p2Snake.getSize(), p2Snake.getColor());
+        break;
+      case "newDirection":
+        p2Snake.setDirection(data.direction);
+    }
   }
 
   return {
@@ -153,4 +204,4 @@ window.Game =
     keyPressed: keyPressed
   };
 
-} (window) )
+} (window.Snake) );
