@@ -61,6 +61,7 @@ window.Game =
     if(!isHost) {
       return;
     }
+
     var that = this;
     playing = true;
     gameLoopIntervalId = setInterval(function() {
@@ -183,10 +184,10 @@ window.Game =
       p1Snake = getSnakeForPlayer("player1"),
       p2Snake = getSnakeForPlayer("player2");
 
-    clearCanvas();
 
     switch(data.type) {
       case "move":
+        clearCanvas();
         drawFood(data.food)
         drawSnake(data.player1, p1Snake.getSize(), p1Snake.getColor());
         drawSnake(data.player2, p2Snake.getSize(), p2Snake.getColor());

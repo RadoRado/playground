@@ -80,7 +80,7 @@ $(document).ready(function() {
 
     Game.init({
       canvas: canvas,
-      frameSpeed: 60,
+      frameSpeed: 500,
       player: isHost? "player1" : "player2",
       isHost: isHost,
       gameId : gameId,
