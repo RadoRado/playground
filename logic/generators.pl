@@ -10,3 +10,8 @@ odd(X) :- not(even(X)).
 
 evens(X) :- int(X), even(X).
 odds(X) :- int(X), odd(X).
+
+between(A, B, A) :- A =< B.
+between(A, B, C) :- A < B, A1 is A + 1, between(A1, B, C).
+
+pairs(X, Y) :- int(S), between(0, S, X), Y is S - X.
