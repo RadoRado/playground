@@ -15,11 +15,11 @@ end
 def prime?(n)
     prime = true
     
-    2.upto(n-1) { |try|
+    2.upto(n-1) do |try|
         if n % try == 0
             prime = false
         end
-    }
+    end
 
     prime
 end
@@ -37,4 +37,31 @@ end
 
 def anagram?(word, other)
   word.split("").sort == other.split("").sort
+end
+
+def remove_prefix(prefix, string)
+  words = string.split(/\W+/)
+
+  if words[0] == prefix
+    words.shift
+  end
+
+  words.join(" ")
+end
+
+def digits(n)
+  n.to_s.split("").map do |x|
+      x.to_i
+  end
+end
+
+def fizzbuzz(range)
+  range.map do |n|
+    case
+    when [n % 3, n % 5].all?(&:zero?) then :fizzbuzz
+    when (n % 3).zero? then :fizz
+    when (n % 5).zero? then :buzz
+    else            n
+    end
+  end
 end

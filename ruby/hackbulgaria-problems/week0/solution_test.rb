@@ -3,6 +3,7 @@ require 'minitest/autorun'
 require_relative 'solution'
 
 class SolutionTest < Minitest::Unit::TestCase
+
   def test_histogram_basic
     assert_equal histogram("abraca"), {"a"=>3, "b"=>1, "r"=>1, "c"=>1 }
   end
@@ -47,7 +48,17 @@ class SolutionTest < Minitest::Unit::TestCase
     assert anagram?("", "")
   end
 
+  def test_remove_prefix
+    assert_equal "Nights Out", remove_prefix("Ladies", "Ladies Nights Out")   
+  end
 
+  def test_remove_prefix
+    assert_equal "baba baba", remove_prefix("baba", "baba baba baba")
+  end
+
+  def test_digits
+    assert_equal [1, 2, 3], digits(123)
+  end
 
 
 end
