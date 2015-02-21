@@ -65,3 +65,21 @@ def fizzbuzz(range)
     end
   end
 end
+
+def count(array)
+  Hash.new(0).tap do |hash|
+    array.each do |element|
+      hash[element] += 1
+    end
+  end
+end
+
+def sum(numbers)
+  numbers.inject do |sum, x|
+    sum + x
+  end
+end
+
+def count_words(*sentences)
+  count sentences.join(" ").split(/\W+/)
+end

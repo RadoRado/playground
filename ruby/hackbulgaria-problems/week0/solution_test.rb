@@ -60,5 +60,20 @@ class SolutionTest < Minitest::Unit::TestCase
     assert_equal [1, 2, 3], digits(123)
   end
 
+  def test_count
+    expected = { 1 => 3, 2 => 3 }
+    assert_equal expected, count([1, 1, 1, 2, 2, 2])
+  end
+
+  def test_count_with_words
+    expected = {"this"=>1, "is"=>1, "an"=>1, "array"=>1, "of"=>1, "words"=>3}
+    assert_equal expected, count(%w(this is an array of words words words))
+  end
+
+  def test_count_words_one_sentence
+    expected = {"this"=>1, "is"=>1, "a"=>1, "sentence"=>1}
+    assert_equal expected, count_words("this is a sentence.")
+  end
 
 end
+
