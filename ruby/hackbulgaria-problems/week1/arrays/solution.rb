@@ -25,7 +25,7 @@ class Array
 
     while items.length > 0 do
       
-      if items.take(search.length) == search then
+      if items.take(search.length) == search
         count += 1
       end
       
