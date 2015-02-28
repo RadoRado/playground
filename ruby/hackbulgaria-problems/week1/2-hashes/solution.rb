@@ -8,11 +8,16 @@ class Hash
   end
 
   def pick!(*keys)
-    to_delete = self.except(keys)
-
-    to_delete.each do |key|
+    to_delete = self.except(*keys)
+    p to_delete
+    to_delete.each do |key, value|
+      p key
       self.delete(key)
     end
+    
+    p self
+
+    self
   end
 
 
