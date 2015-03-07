@@ -92,10 +92,7 @@ class NumberSet
 
   def [](filter)
     NumberSet.new.tap do |set|
-       @container
-        .each_value
-        .to_a
-        .select { |value| filter.test(value) }
+       select { |value| filter.test(value) }
         .each { |value| set << value }
     end
   end
