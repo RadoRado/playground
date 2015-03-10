@@ -44,4 +44,25 @@ class SolutionTest < Minitest::Test
 
     assert_equal true, collection.include?(5)
   end
+
+
+  def test_any?
+    collection = Collection.new(*1..10)
+
+    assert collection.any?(&:even?)
+  end
+
+  def test_all?
+    collection = Collection.new(*1..10)
+
+    assert collection.all? { |x| x > 0 }
+  end
+  
+
+  def test_size
+    collection = Collection.new(*1..10)
+
+    assert_equal 10, collection.size
+  end
+
 end

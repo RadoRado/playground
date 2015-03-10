@@ -1,26 +1,50 @@
 module MyEnumerable
   def map
-    # Your code goes here.
+    result = []
+    
+    each do |element|
+      result << (yield element)
+    end
+
+    result
   end
 
   def filter
-    # Your code goes here.
+    result = []
+
+    each do |element|
+      result << element if yield element
+    end
+    
+    result
   end
 
   def reject
-    # Your code goes here.
+    result = []
+
+    each do |element|
+      result << element unless yield element
+    end
+    
+    result
   end
 
   def reduce(initial = nil)
-    # Your code goes here.
+    result = initial
+
+    each do |element|
+      result = yield result, element
+    end
+
+    result
   end
 
   def any?
-    # Your code goes here.
+    filter { |element| yield element }.length > 0
   end
 
   def all?
-    # Your code goes here.
+    filter { |element| yield element}.length == filter { |_| true }.length
   end
 
   def each_cons(n)
@@ -28,7 +52,9 @@ module MyEnumerable
   end
 
   def include?(element)
-    # Your code goes here.
+    reduce(false) do |found, value|
+      found || value == element
+    end
   end
 
   def count(element = nil)
@@ -36,6 +62,7 @@ module MyEnumerable
   end
 
   def size
-    # Your code goes here.
+    map { |_| 1}
+      .reduce(&:+)
   end
 end
