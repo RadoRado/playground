@@ -10,18 +10,22 @@ public class BirthdayRanges {
 			List<Pair> ranges) {
 
 		int[] bdays = new int[366];
+//		bornBefore[x] = number of people born before day x
+		int[] bornBefore = new int[366];
 		List<Integer> result = new ArrayList<Integer>();
 
 		for (Integer bday : birthdays) {
 			bdays[bday] += 1;
 		}
+		
+		bornBefore[0] = 0;
+		
+		for (int i = 1; i < bdays.length; i++) {
+			bornBefore[i] = bornBefore[i - 1] + bdays[i];
+		}
 
 		for (Pair range : ranges) {
-			int bdaysCount = 0;
-			for (int i = range.start; i <= range.end; i++) {
-				bdaysCount += bdays[i];
-			}
-
+			int bdaysCount = bornBefore[range.end] - bornBefore[range.start - 1];
 			result.add(bdaysCount);
 		}
 
