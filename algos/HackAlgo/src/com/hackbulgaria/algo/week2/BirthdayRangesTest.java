@@ -31,7 +31,7 @@ public class BirthdayRangesTest {
 		ranges.add(new Pair(300, 365));
 
 		List<Integer> expected = new ArrayList<Integer>();
-		expected.add(4);
+		expected.add(5);
 		expected.add(2);
 		expected.add(0);
 		expected.add(1);

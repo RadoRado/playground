@@ -9,20 +9,17 @@ public class BirthdayRanges {
 	public List<Integer> birthdaysCount(List<Integer> birthdays,
 			List<Pair> ranges) {
 
-		boolean[] bdays = new boolean[366];
+		int[] bdays = new int[366];
 		List<Integer> result = new ArrayList<Integer>();
 
 		for (Integer bday : birthdays) {
-			bdays[bday] = true;
+			bdays[bday] += 1;
 		}
 
 		for (Pair range : ranges) {
 			int bdaysCount = 0;
 			for (int i = range.start; i <= range.end; i++) {
-				if (bdays[i]) {
-					System.out.println(i);
-					bdaysCount++;
-				}
+				bdaysCount += bdays[i];
 			}
 
 			result.add(bdaysCount);
