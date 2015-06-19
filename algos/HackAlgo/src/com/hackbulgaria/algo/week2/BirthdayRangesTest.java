@@ -23,7 +23,7 @@ public class BirthdayRangesTest {
 		Integer[] bdaysArray = { 5, 10, 6, 7, 3, 4, 5, 11, 21, 300, 15 };
 		ArrayList<Integer> bdays = new ArrayList<Integer>(
 				Arrays.asList(bdaysArray));
-		List<Pair> ranges = new ArrayList<>();
+		List<Pair<Integer, Integer>> ranges = new ArrayList<>();
 
 		ranges.add(new Pair(4, 9));
 		ranges.add(new Pair(6, 7));

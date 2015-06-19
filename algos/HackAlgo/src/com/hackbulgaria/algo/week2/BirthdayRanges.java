@@ -7,7 +7,7 @@ public class BirthdayRanges {
 
 	// Returns a vector with the number of people born in the specific ranges.
 	public List<Integer> birthdaysCount(List<Integer> birthdays,
-			List<Pair> ranges) {
+			List<Pair<Integer, Integer>> ranges) {
 
 		int[] bdays = new int[366];
 //		bornBefore[x] = number of people born before day x
@@ -24,8 +24,8 @@ public class BirthdayRanges {
 			bornBefore[i] = bornBefore[i - 1] + bdays[i];
 		}
 
-		for (Pair range : ranges) {
-			int bdaysCount = bornBefore[range.end] - bornBefore[range.start - 1];
+		for (Pair<Integer, Integer> range : ranges) {
+			int bdaysCount = bornBefore[range.second] - bornBefore[range.first - 1];
 			result.add(bdaysCount);
 		}
 

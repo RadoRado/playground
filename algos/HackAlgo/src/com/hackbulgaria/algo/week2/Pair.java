@@ -1,11 +1,11 @@
 package com.hackbulgaria.algo.week2;
 
-public class Pair {
-	public int start;
-	public int end;
+public class Pair<F, S> {
+	public F first;
+	public S second;
 
-	public Pair(int start, int end) {
-		this.start = start;
-		this.end = end;
+	public Pair(F first, S second) {
+		this.first = first;
+		this.second = second;
 	}
 }
