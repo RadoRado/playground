@@ -13,6 +13,14 @@ class SolutionTest < Minitest::Test
     def each(&block)
       @data.each(&block)
     end
+
+    def ==(otherCollection)
+      @data == otherCollection.data
+    end
+
+    def get(index)
+      return @data[index]
+    end
   end
 
   def test_map
@@ -65,4 +73,16 @@ class SolutionTest < Minitest::Test
     assert_equal 10, collection.size
   end
 
+  def test_count_with_element_nil
+    collection = Collection.new(*1..10)
+
+    assert_equal 10, collection.count
+  end
+
+  def test_count_with_non_nil_element
+    collection = Collection.new(*1..10)
+
+    assert_equal 1, collection.count(10)
+  end
+  
 end

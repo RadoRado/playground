@@ -46,11 +46,7 @@ module MyEnumerable
   def all?
     filter { |element| yield element}.length == filter { |_| true }.length
   end
-
-  def each_cons(n)
-    # Your code goes here.
-  end
-
+  
   def include?(element)
     reduce(false) do |found, value|
       found || value == element
@@ -58,7 +54,11 @@ module MyEnumerable
   end
 
   def count(element = nil)
-    # Your code goes here.
+    filter do |x|
+      if element.nil? then x
+      else x == element
+      end
+    end.length
   end
 
   def size
