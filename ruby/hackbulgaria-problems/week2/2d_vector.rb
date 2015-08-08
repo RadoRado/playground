@@ -17,12 +17,10 @@ class Vector
   end
 
   def length
-    return @x ** 2 + @y ** 2
+    return Math.sqrt(@x ** 2 + @y ** 2)
   end
 
-  def magnitude
-    Math.sqrt(length)
-  end
+  alias_method :magnitude, :length 
 
   def normalize
     m = magnitude

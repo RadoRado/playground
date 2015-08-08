@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require_relative 'vector'
+require_relative '2d_vector'
 
 class VectorTest < Minitest::Test
   def test_vector_initialization
@@ -18,12 +18,6 @@ class VectorTest < Minitest::Test
     unit_vector = Vector.j 
     assert_equal 0, unit_vector.x
     assert_equal 1, unit_vector.y
-  end
-
-  def test_vector_length
-    v = Vector.new(1, 2)
-
-    assert_equal 1**2 + 2**2, v.length
   end
 
   def test_vector_magnitude
