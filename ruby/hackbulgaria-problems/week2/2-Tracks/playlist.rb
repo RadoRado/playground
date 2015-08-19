@@ -12,12 +12,10 @@ class Playlist
     @tracks = tracks.flatten
   end
   
-  def each
+  def each(&block)
     return enum_for(:each) unless block_given?
-
-    @tracks.each do |track|
-      yield track
-    end
+    
+    @tracks.each(&block)
   end
 
   def find(&block)
@@ -31,29 +29,33 @@ class Playlist
       end
     end
   end
+  
+  def find_by_attribute(attribute_name, attribute_value)
+    find { |track| track.instance_eval(attribute_name) == attribute_value }
+  end
 
   def find_by_name(name)
-    # Finds all the tracks by the name. Should return a new Playlist.
+    find_by_attribute("name", name)
   end
 
   def find_by_artist(artist)
-    # Finds all the tracks by the artist. Should return a new Playlist.
+    find_by_attribute("artist", artist)
   end
 
   def find_by_album(album)
-    # Finds all the tracks from the album. Should return a new Playlist.
+    find_by_attribute("album", album)
   end
 
   def find_by_genre(genre)
-    # Finds all the tracks by genre. Should return a new Playlist.
+    find_by_attribute("genre", genre)
   end
 
   def shuffle
-    # Give me a new playlist that shuffles the tracks of the current one.
+    Playlist.new(@tracks.shuffle)
   end
 
   def random
-    # Give me a random track.
+    @tracks.sample
   end
 
   def to_s
@@ -62,15 +64,19 @@ class Playlist
   end
 
   def &(playlist)
-    # Your code goes here. This _should_ return new playlist.
+    Playlist.new(@tracks + playlist.tracks)
   end
 
   def |(playlist)
-    # Your code goes here. This _should_ return new playlist.
+    # Not sure what to do
   end
 
   def -(playlist)
-    # Your code goes here. This _should_ return new playlist.
+    Playlist.new(@tracks - playlist.tracks)
+  end
+
+  def has_same_songs(other)
+    @tracks.to_set == other.tracks.to_set
   end
 
   def ==(other)

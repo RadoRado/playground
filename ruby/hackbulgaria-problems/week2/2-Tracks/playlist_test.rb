@@ -8,6 +8,13 @@ class AwesomeManowarFilter
   end
 end
 
+class AwesomeDanceFilter
+  def call(track)
+    track.genre == "dance"
+  end
+
+end
+
 class PlaylistTest < Minitest::Test
   extend Minitest::Spec::DSL  
 
@@ -20,7 +27,9 @@ class PlaylistTest < Minitest::Test
                            name: "Odin",
                            album: "Sonds of Odin",
                            genre: "Metal" }
-  
+
+  let(:full_playlist) { Playlist.new(track1, track2) } 
+
   def test_two_tracks_are_equal
     assert track1 == track1
   end
@@ -56,28 +65,62 @@ class PlaylistTest < Minitest::Test
   end
 
   def test_each_with_block_given
-    p1 = Playlist.new(track1, track2)
     counter = 0
     
-    p1.each { |track| counter += 1 }
+    full_playlist.each { |track| counter += 1 }
 
     assert_equal 2, counter
   end
   
   def test_find
-    full_playlist = Playlist.new(track1, track2)
     expected = Playlist.new(track2)
     new_playlist = full_playlist.find { |track| ["Manowar"].include? track.artist }
     assert_equal expected, new_playlist 
   end
 
-  def test_find_by
-    full_playlist = Playlist.new(track1, track2)
+  def test_find_by_with_one_filter
     expected = Playlist.new(track2)
 
     new_playlist = full_playlist.find_by AwesomeManowarFilter.new 
 
     assert_equal expected, new_playlist
+  end
+
+  def test_find_by_with_one_filter
+    expected = Playlist.new
+    new_playlist = full_playlist.find_by AwesomeDanceFilter.new, AwesomeManowarFilter.new 
+
+    assert_equal expected, new_playlist
+  end
+
+  def test_find_by_name
+    expected = Playlist.new(track2)
+
+    assert_equal expected, full_playlist.find_by_name("Odin")
+  end
+
+  def test_find_by_artist
+    expected = Playlist.new(track2)
+
+    assert_equal expected, full_playlist.find_by_artist("Manowar")
+  end
+  
+  def test_find_by_album
+    expected = Playlist.new(track2)
+
+    assert_equal expected, full_playlist.find_by_album("Sonds of Odin")
+  end
+
+  def test_find_by_genre
+    expected = Playlist.new(track1)
+
+    assert_equal expected, full_playlist.find_by_genre("Dance")
+  end
+
+  def test_shuffle
+    shuffled = full_playlist.shuffle
+
+    assert shuffled.has_same_songs(full_playlist)
   end
 
 end
