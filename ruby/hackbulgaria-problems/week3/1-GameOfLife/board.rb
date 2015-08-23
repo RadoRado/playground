@@ -10,18 +10,10 @@ module GameOfLife
     attr_reader :width, :height
 
     def initialize(width, height, start_positions=[])
-      @board = []
       @width = width
       @height = height
+      @board = allocate_board
 
-      1.upto(width) do |current_row| 
-        row = [0] * height
-        @board << row.each_with_index.map do |_, index|
-          GameOfLife::Cell.new(current_row - 1, index)
-        end
-
-      end
-      
       start_positions.each do |position|
         x, y = position
         @board[x][y].bring_to_life
@@ -30,36 +22,31 @@ module GameOfLife
     end
     
     def next_generation
-      new_board = []
-      
-      @board.each_with_index do |_, row_index|
-        new_board[row_index] = []
-        @board[row_index].each_with_index do |_, col_index|
-          new_board[row_index][col_index] = GameOfLife::Cell.new(row_index, col_index)
-        end
-      end
-
+      new_board = allocate_board
       cells = @board.flatten
 
       cells.each do |cell|
         neighbours_status = neighbours(cell)
         
+        alive_neighbours = neighbours_status["alive"]
+
         if cell.is_alive
-          if neighbours_status["alive"] < 2  || neighbours_status["alive"] > 3 
+          if alive_neighbours < 2  || alive_neighbours > 3 
             new_board[cell.x][cell.y].die
           end
 
-          if [2, 3].include? neighbours_status["alive"]
+          if [2, 3].include? alive_neighbours 
             new_board[cell.x][cell.y].bring_to_life
           end 
         end
         if !cell.is_alive
-          if neighbours_status["alive"] == 3
+          if alive_neighbours == 3
             new_board[cell.x][cell.y].bring_to_life
           end
         end
 
       end
+
       @board = new_board
     end
 
@@ -72,6 +59,17 @@ module GameOfLife
 
     private
     
+    def allocate_board
+      Array.new.tap do |board|
+        0.upto(@width) do |current_row| 
+          row = [0] * @height
+          board << row.each_with_index.map do |_, index|
+            GameOfLife::Cell.new(current_row, index)
+          end
+        end
+      end
+    end
+
     def in_board(x, y)
       x >= 0 and x < @width and y >= 0 and y < @height
     end
