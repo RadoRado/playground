@@ -1,8 +1,10 @@
 module GameOfLife
   class Cell
-    attr_accessor :is_alive
+    attr_accessor :is_alive, :x, :y
     
-    def initialize
+    def initialize(x, y)
+      @x = x
+      @y = y
       is_alive = false
     end
 

@@ -3,7 +3,7 @@ require_relative 'board'
 module GameOfLife
   class << GameOfLife
     def start
-      b = GameOfLife::Board.new(20, 20, start_positions = [ [0, 1] ])
+      b = GameOfLife::Board.new(20, 20, start_positions = [ [0, 0], [0, 1], [1, 0], [1, 1] ])
       iteration = 0
 
       loop do
