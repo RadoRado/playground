@@ -4,9 +4,10 @@ require_relative 'figure.rb'
 module GameOfLife
   class << GameOfLife
     def start
-      start_figures = [GameOfLife::StillLifes::Beehive.new,
-                       GameOfLife::StillLifes::Box.new(10, 10),
-                       GameOfLife::Oscillators::Blinker.new(5, 5)]
+      start_figures = [GameOfLife::Spaceships::Glider.new,
+                       # GameOfLife::StillLifes::Box.new(10, 10),
+                       # GameOfLife::Oscillators::Blinker.new(5, 5)
+                      ]
       
       board = GameOfLife::Board.new(20, 20, start_figures) 
 
