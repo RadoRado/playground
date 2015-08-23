@@ -3,9 +3,9 @@ require_relative 'cell.rb'
 module GameOfLife
   class Board
     
-    MOVEMENTS = [ [-1, -1], [0, -1], [1, -1],
-                  [-1, 0], [1, 0],
-                  [-1, 1], [0, 1], [1, 1] ]
+    MOVEMENTS = [[-1, -1], [0, -1], [1, -1],
+                 [-1, 0], [1, 0],
+                 [-1, 1], [0, 1], [1, 1]]
     
     attr_reader :width, :height
 
@@ -24,17 +24,43 @@ module GameOfLife
       
       start_positions.each do |position|
         x, y = position
-        @board[x][y].is_alive = true
+        @board[x][y].bring_to_life
       end
       
     end
     
     def next_generation
+      new_board = []
+      
+      @board.each_with_index do |_, row_index|
+        new_board[row_index] = []
+        @board[row_index].each_with_index do |_, col_index|
+          new_board[row_index][col_index] = GameOfLife::Cell.new(row_index, col_index)
+        end
+      end
+
       cells = @board.flatten
 
       cells.each do |cell|
-        p neighbours(cell)
+        neighbours_status = neighbours(cell)
+        
+        if cell.is_alive
+          if neighbours_status["alive"] < 2  || neighbours_status["alive"] > 3 
+            new_board[cell.x][cell.y].die
+          end
+
+          if [2, 3].include? neighbours_status["alive"]
+            new_board[cell.x][cell.y].bring_to_life
+          end 
+        end
+        if !cell.is_alive
+          if neighbours_status["alive"] == 3
+            new_board[cell.x][cell.y].bring_to_life
+          end
+        end
+
       end
+      @board = new_board
     end
 
     def to_s
@@ -49,6 +75,7 @@ module GameOfLife
     def in_board(x, y)
       x >= 0 and x < @width and y >= 0 and y < @height
     end
+
     def neighbours(cell)
       Hash.new.tap do |h|
         h["alive"] = 0
