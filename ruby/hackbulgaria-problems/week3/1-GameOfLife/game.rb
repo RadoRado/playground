@@ -1,12 +1,14 @@
-require_relative 'board'
+require_relative 'board.rb'
+require_relative 'figure.rb'
 
 module GameOfLife
   class << GameOfLife
     def start
-      start_positions = [ [0, 0], [0, 1], [1, 0], [1, 1], [10, 10],
-                          [10, 11], [10, 12]]
+      start_figures = [GameOfLife::StillLifes::Beehive.new,
+                       GameOfLife::StillLifes::Box.new(10, 10),
+                       GameOfLife::Oscillators::Blinker.new(5, 5)]
       
-      board = GameOfLife::Board.new(20, 20, start_positions) 
+      board = GameOfLife::Board.new(20, 20, start_figures) 
 
       puts "Initial state"
       puts board.to_s

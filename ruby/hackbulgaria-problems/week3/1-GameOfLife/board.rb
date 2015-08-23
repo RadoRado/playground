@@ -9,16 +9,14 @@ module GameOfLife
     
     attr_reader :width, :height
 
-    def initialize(width, height, start_positions=[])
+    def initialize(width, height, start_figures=[])
       @width = width
       @height = height
       @board = allocate_board
 
-      start_positions.each do |position|
-        x, y = position
-        @board[x][y].bring_to_life
+      start_figures.each do |figure|
+        figure.render_to(@board)
       end
-      
     end
     
     def next_generation
