@@ -1,18 +1,17 @@
+# rubocop:disable Style/Documentation
+
 module GameOfLife
   class Cell
     attr_accessor :is_alive, :x, :y
-    
-    def initialize(x, y, is_alive=false)
+
+    def initialize(x, y, is_alive = false)
       @x = x
       @y = y
       @is_alive = is_alive
     end
-    
+
     def die
-      if @is_alive
-        p "#{@x}:#{@y} dies"
-        @is_alive = false
-      end
+      @is_alive = false
     end
 
     def bring_to_life
@@ -20,11 +19,9 @@ module GameOfLife
     end
 
     def to_s
-      if @is_alive
-        return "*"
-      end
+      return '-' unless @is_alive
 
-      "-"
+      '*'
     end
   end
 end

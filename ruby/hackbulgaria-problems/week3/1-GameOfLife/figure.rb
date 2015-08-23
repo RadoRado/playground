@@ -1,3 +1,4 @@
+# rubocop:disable Style/Documentation
 require_relative 'cell.rb'
 
 module GameOfLife
@@ -16,12 +17,18 @@ module GameOfLife
         board[cell.x][cell.y] = cell
       end
     end
-    
-    def add_cell(x, y, is_alive=true)
+
+    def add_cell(x, y, is_alive = true)
       @coordinates << GameOfLife::Cell.new(x + @dx, y + @dy, is_alive)
     end
+
+    def create(figure_structure)
+      figure_structure.each do |coords|
+        x, y, alive = coords
+        add_cell(x, y, alive)
+      end
+    end
   end
-  
 end
 
 module GameOfLife
@@ -29,31 +36,23 @@ module GameOfLife
     class Box < GameOfLife::Figure
       def initialize(dx = 0, dy = 0)
         super
-        add_cell(0, 0)
-        add_cell(0, 1)
-        add_cell(1, 0)
-        add_cell(1, 1)
+
+        create([[0, 0, true], [0, 1, true], [1, 0, true], [1, 1, true]])
       end
     end
 
     class Beehive < Figure
       def initialize(dx = 0, dy = 0)
         super
-        
-        add_cell(0, 0, false)
-        add_cell(0, 1)
-        add_cell(0, 2)
-        add_cell(0, 3, false)
-        
-        add_cell(1, 0)
-        add_cell(1, 1, false)
-        add_cell(1, 2, false)
-        add_cell(1, 3)
-        
-        add_cell(2, 0, false)
-        add_cell(2, 1)
-        add_cell(2, 2)
-        add_cell(2, 3, false)
+
+        # create 1st row
+        create([[0, 0, false], [0, 1, true], [0, 2, true], [0, 3, false]])
+
+        # create 2nd row
+        create([[1, 0, true], [1, 1, false], [1, 2, false], [1, 3, true]])
+
+        # create 3rd row
+        create([[2, 0, false], [2, 1, true], [2, 2, true], [2, 3, false]])
       end
     end
   end
@@ -65,9 +64,7 @@ module GameOfLife
       def initialize(dx = 0, dy = 0)
         super
 
-        add_cell(0, 0)
-        add_cell(0, 1)
-        add_cell(0, 2)
+        create([[0, 0, true], [0, 1, true], [0, 2, true]])
       end
     end
   end
@@ -79,19 +76,15 @@ module GameOfLife
       def initialize(dx = 0, dy = 0)
         super
 
-        add_cell(0, 0, false)
-        add_cell(0, 1)
-        add_cell(0, 2, false)
+        # Create 1st row
+        create([[0, 0, false], [0, 1, true], [0, 2, false]])
 
-        add_cell(1, 0, false)
-        add_cell(1, 1, false)
-        add_cell(1, 2)
+        # Create 2nd row
+        create([[1, 0, false], [1, 1, false], [1, 2, true]])
 
-        add_cell(2, 0)
-        add_cell(2, 1)
-        add_cell(2, 2)
+        # Create 3rd row
+        create([[2, 0, true], [2, 1, true], [2, 2, true]])
       end
     end
   end
-
 end
