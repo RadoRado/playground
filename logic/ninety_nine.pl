@@ -1,4 +1,4 @@
-my_last(X, [X]).Gg
+my_last(X, [X]).
 my_last(X, [_ | T]) :- my_last(X, T).
 
 last_but_one(X, [X | [_]]).
