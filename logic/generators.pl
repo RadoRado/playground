@@ -1,6 +1,12 @@
 int(0).
 int(X) :- int(Y), X is Y + 1.
 
+takeout(X,[X|R],R).  
+takeout(X,[F |R],[F|S]) :- takeout(X,R,S).
+
+perm([X|Y],Z) :- perm(Y,W), takeout(X,Z,W).  
+perm([],[]).
+
 squares(X) :- int(Y), X is Y * Y.
 
 divisible(X, Y) :- 0 is X mod Y, !.
