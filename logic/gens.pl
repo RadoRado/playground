@@ -41,3 +41,23 @@ nat_list_helper(X, L, Current, Count) :- Current1 is Current + 1, Count1 is Coun
 nat_list(L1, N) :- nat_list_helper(L, [], 0, N), reverse(L, L1).
 
 even_length_lists(L) :- evens(N), nat_list(L, N).
+
+fib(1, 1) :- !.
+fib(0, 0) :- !.
+fib(N, Value) :-
+  A is N - 1, fib(A, A1),
+  B is N - 2, fib(B, B1),
+  Value is A1 + B1.
+
+fibs(X) :- nat(Y), fib(Y, X).
+
+
+append([], R, R).
+append([H1 | T1], L2, [H1 | R]) :- append(T1, L2, R).
+
+concat_acc([], R, R).
+concat_acc([L | TL], A, R) :- append(A, L, A1), concat_acc(TL, A1, R).
+
+concat(LS, X) :- concat_acc(LS, [], X).
+
+gen_list(X, Y, R) :- append([X], [Y], R).

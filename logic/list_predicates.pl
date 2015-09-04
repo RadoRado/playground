@@ -94,3 +94,9 @@ doubleList(L) :- append(X, X, L).
 
 palindrome([]).
 palindrome(L) :- reverse2(L, L).
+
+uniq_acc([], R, R1) :- reverse(R, R1).
+uniq_acc([H | T], A, R) :- member(H, A), uniq_acc(T, A, R).
+uniq_acc([H | T], A, R) :- not(member(H, A)), uniq_acc(T, [H | A], R).
+
+unique(L, X) :- uniq_acc(L, [], X).
