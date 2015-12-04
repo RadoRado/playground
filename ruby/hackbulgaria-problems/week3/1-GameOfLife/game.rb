@@ -6,7 +6,8 @@ require_relative 'figure.rb'
 module GameOfLife
   class << GameOfLife
     def start
-      start_figures = [GameOfLife::Spaceships::Glider.new]
+      start_figures = [GameOfLife::Spaceships::Glider.new,
+                       GameOfLife::Oscillators::Blinker.new(10, 10)]
 
       board = GameOfLife::Board.new(20, 20, start_figures)
 
@@ -30,7 +31,7 @@ module GameOfLife
         puts board.to_s
 
         iteration += 1
-        sleep 1
+        sleep 0.5
       end
     end
   end
